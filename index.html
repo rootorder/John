@@ -1,226 +1,76 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
 <title>AI Tourist Assistant</title>
 
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-    font-family: "Poppins", sans-serif;
-    background: #f1f5f9;
-    margin: 0;
+
+*{
+box-sizing:border-box;
 }
 
-header {
-    background: #0f172a;
-    color: white;
-    padding: 20px;
-    text-align: center;
+body{
+font-family:"Poppins",sans-serif;
+margin:0;
+background:#f4f7fb;
+color:#1e293b;
 }
 
-.container {
-    max-width: 1000px;
-    margin: 30px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+/* HEADER */
+
+header{
+background:linear-gradient(135deg,#2563eb,#06b6d4);
+color:white;
+padding:50px 20px;
+text-align:center;
 }
 
-button {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
+header h1{
+margin:0;
+font-size:40px;
 }
 
-button:hover {
-    background: #1d4ed8;
+header p{
+margin-top:10px;
+opacity:0.9;
 }
 
-.card {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
-    transition: 0.2s;
+/* CONTAINER */
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:30px 20px;
 }
 
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+/* FORM CARD */
+
+.form-card{
+background:white;
+padding:25px;
+border-radius:14px;
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+margin-bottom:30px;
 }
 
-.score {
-    background: #e0f2fe;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-    display: inline-block;
-    margin-bottom: 8px;
-}
-</style>
-</head>
-
-<body>
-
-<header>
-<h1>AI Tourist Assistant</h1>
-<p>Personalised Singapore Travel Recommendations</p>
-</header>
-
-<div class="container">
-
-<h2>Select your preferences</h2>
-
-<form id="preferencesForm">
-
-<label>Type of Activity:</label><br>
-<input type="checkbox" name="type" value="Nature"> Nature
-<input type="checkbox" name="type" value="Cultural"> Cultural
-<input type="checkbox" name="type" value="Adventure"> Adventure
-<input type="checkbox" name="type" value="Food"> Food
-<br><br>
-
-<label>Budget:</label>
-<select name="budget">
-<option value="low">Low $</option>
-<option value="medium">Medium $$</option>
-<option value="high">High $$$</option>
-</select>
-
-<br><br>
-
-<label>Trip Duration:</label>
-<select name="duration">
-<option value="short">1–3 hours</option>
-<option value="halfday">Half day</option>
-<option value="fullday">Full day</option>
-</select>
-
-<br><br>
-
-<button type="button" onclick="getRecommendations()">Get Recommendations</button>
-
-</form>
-
-<h2>Recommendations</h2>
-<div id="results"></div>
-
-<h2>AI Suggestions</h2>
-<div id="aiResults"></div>
-
-</div>
-
-
-<script>
-
-// Attractions dataset
-let attractions = [
-{"name":"Gardens by the Bay","type":"Nature","budget":"medium","duration":"halfday","description":"Iconic futuristic gardens with Supertrees, Flower Dome, and Cloud Forest."},
-{"name":"Botanic Gardens","type":"Nature","budget":"low","duration":"halfday","description":"UNESCO World Heritage site with lush greenery and lakes."},
-{"name":"MacRitchie Reservoir","type":"Nature","budget":"low","duration":"halfday","description":"Popular reservoir and treetop walk for nature lovers."},
-{"name":"Pulau Ubin","type":"Nature","budget":"low","duration":"fullday","description":"Rustic island with cycling paths and nature trails."},
-{"name":"Lazarus Island","type":"Nature","budget":"low","duration":"fullday","description":"Quiet island beaches ideal for picnics and swims."},
-
-{"name":"Chinatown Heritage Centre","type":"Cultural","budget":"medium","duration":"halfday","description":"Learn about early Chinese immigrants in Singapore."},
-{"name":"Little India","type":"Cultural","budget":"low","duration":"halfday","description":"Vibrant district with temples and markets."},
-{"name":"Kampong Glam","type":"Cultural","budget":"low","duration":"halfday","description":"Historic Malay Arab quarter with mosque and shops."},
-
-{"name":"Universal Studios Singapore","type":"Adventure","budget":"high","duration":"fullday","description":"Thrilling theme park rides."},
-{"name":"iFly Singapore","type":"Adventure","budget":"medium","duration":"short","description":"Indoor skydiving simulator."},
-
-{"name":"Maxwell Food Centre","type":"Food","budget":"low","duration":"halfday","description":"Famous hawker centre with chicken rice."},
-{"name":"Lau Pa Sat","type":"Food","budget":"low","duration":"short","description":"Historic market known for satay street."}
-];
-
-
-// Recommendation engine
-function getRecommendations(){
-
-let types = [...document.querySelectorAll('input[name="type"]:checked')].map(el => el.value);
-let budget = document.querySelector('select[name="budget"]').value;
-let duration = document.querySelector('select[name="duration"]').value;
-
-let scored = attractions.map(a => {
-
-let score = 0;
-
-if(types.includes(a.type)) score += 5;
-if(a.budget === budget) score += 3;
-if(a.duration === duration) score += 2;
-
-return {...a,score};
-
-});
-
-scored.sort((a,b)=>b.score-a.score);
-
-let top10 = scored.slice(0,10);
-
-let output = "<h3>Top Recommendations</h3>";
-
-top10.forEach(r=>{
-
-output+=`
-<div class="card">
-<div class="score">Match Score: ${r.score}/10</div>
-<h3>${r.name}</h3>
-<p>${r.description}</p>
-</div>
-`;
-
-});
-
-document.getElementById("results").innerHTML = output;
-
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:20px;
+margin-top:10px;
 }
 
-
-
-// Optional backend AI call
-async function getAISuggestions(){
-
-let types = [...document.querySelectorAll('input[name="type"]:checked')].map(el => el.value);
-let budget = document.querySelector('select[name="budget"]').value;
-let duration = document.querySelector('select[name="duration"]').value;
-
-try{
-
-const response = await fetch('http://localhost:3000/getAISuggestions',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({types,budget,duration})
-});
-
-const aiResults = await response.json();
-
-let output="";
-
-aiResults.forEach(a=>{
-output+=`
-<div class="card">
-<h3>${a.name}</h3>
-<p>${a.description}</p>
-</div>
-`;
-});
-
-document.getElementById("aiResults").innerHTML=output;
-
-}catch(err){
-
-document.getElementById("aiResults").innerHTML="<p>Error fetching AI suggestions</p>";
-
+label{
+font-weight:500;
 }
 
+.checkbox-group{
+margin-top:10px;
 }
 
-</script>
-
-</body>
-</html>
+.checkbox-group label{
+margin-right:
+```
